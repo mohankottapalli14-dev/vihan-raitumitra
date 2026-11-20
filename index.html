@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vihan Raitumitra | విహాన్ రైతుమిత్ర</title>
+  <style>
+    :root {
+      --bg: #f3f8f4;
+      --card: #ffffff;
+      --primary: #1b6b3a;
+      --primary-dark: #124b28;
+      --text: #162219;
+      --muted: #55685a;
+      --border: #dce8df;
+      --danger: #c62828;
+      --success: #1b6b3a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding-bottom: 40px;
+    }
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      padding: 18px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .header-top {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand h1 { font-size: 1.25rem; }
+    .brand p { font-size: 0.8rem; opacity: 0.9; margin-top: 2px; }
+    .lang-btn {
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.45);
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .container { max-width: 900px; margin: 16px auto 0; padding: 0 14px; }
+    .tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 14px; }
+    .tab-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .card h2 { font-size: 1.05rem; margin-bottom: 12px; color: var(--primary-dark); }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+    .stat-box { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+    .stat-label { font-size: 0.8rem; color: var(--muted); }
+    .stat-value { font-size: 1.2rem; font-weight: 700; margin-top: 4px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--border); }
+    th { color: var(--muted); font-size: 0.8rem; }
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: #e6f4ea;
+      color: var(--primary);
+    }
+    .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 12px; }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.92rem;
+      background: #fff;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-del { background: transparent; color: var(--danger); border: none; font-weight: 700; cursor: pointer; padding: 4px 8px; }
+    .chat-box {
+      max-height: 280px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding: 8px;
+      background: var(--bg);
+      border-radius: 10px;
+    }
+    .msg { padding: 10px 12px; border-radius: 10px; max-width: 85%; font-size: 0.9rem; line-height: 1.4; }
+    .msg.bot { background: #fff; border: 1px solid var(--border); align-self: flex-start; }
+    .msg.user { background: var(--primary); color: #fff; align-self: flex-end; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-top">
+      <div class="brand">
+        <h1 id="appTitle">విహాన్ రైతుమిత్ర</h1>
+        <p id="appSub">రైతుల డిజిటల్ సహాయకుడు • AP & Telangana</p>
+      </div>
+      <button class="lang-btn" id="langToggle" onclick="toggleLang()">English</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="mandi" onclick="switchTab('mandi')" id="tabMandi">మండి ధరలు</button>
+      <button class="tab-btn" data-tab="ledger" onclick="switchTab('ledger')" id="tabLedger">ఖర్చు & ఆదాయం</button>
+      <button class="tab-btn" data-tab="calendar" onclick="switchTab('calendar')" id="tabCalendar">పంట క్యాలెండర్</button>
+      <button class="tab-btn" data-tab="advisor" onclick="switchTab('advisor')" id="tabAdvisor">కృషి మిత్ర</button>
+    </div>
+
+    <section id="sec-mandi" class="card">
+      <h2 id="mandiHeading">ప్రధాన పంటల మండి ధరలు (క్వింటాల్‌కు)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th id="thCrop">పంట</th>
+            <th id="thMarket">మార్కెట్</th>
+            <th id="thRate">ధర (₹)</th>
+          </tr>
+        </thead>
+        <tbody id="mandiBody"></tbody>
+      </table>
+    </section>
+
+    <section id="sec-ledger" class="card hidden">
+      <h2 id="ledgerHeading">ఖర్చు & ఆదాయం నమోదు</h2>
+      <div class="grid-2" style="margin-bottom: 14px;">
+        <div class="stat-box">
+          <div class="stat-label" id="lblIncome">మొత్తం ఆదాయం</div>
+          <div class="stat-value" style="color: var(--success);" id="totalIncome">₹0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label" id="lblExpense">మొత్తం ఖర్చు</div>
+          <div class="stat-value" style="color: var(--danger);" id="totalExpense">₹0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label" id="lblBalance">నికర నిల్వ</div>
+          <div class="stat-value" id="netBalance">₹0</div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <select id="txType">
+          <option value="expense" id="optExp">ఖర్చు</option>
+          <option value="income" id="optInc">ఆదాయం</option>
+        </select>
+        <input type="text" id="txNote" placeholder="వివరం (ఉదా: ఎరువులు, వరి విక్రయం)" />
+        <input type="number" id="txAmount" placeholder="మొత్తం (₹)" min="1" />
+        <button class="btn-primary" onclick="addTx()" id="btnAddTx">జతచేయి</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th id="thNote">వివరం</th>
+            <th id="thType">రకం</th>
+            <th id="thAmt">మొత్తం</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="txBody"></tbody>
+      </table>
+    </section>
+
+    <section id="sec-calendar" class="card hidden">
+      <h2 id="calHeading">పంట దశల క్యాలెండర్</h2>
+      <div id="calList" class="grid-2"></div>
+    </section>
+
+    <section id="sec-advisor" class="card hidden">
+      <h2 id="advHeading">కృషి మిత్ర సలహా</h2>
+      <div class="chat-box" id="chatBox"></div>
+      <div class="form-row" style="margin-bottom: 0;">
+        <input type="text" id="chatInput" placeholder="వరి, మిర్చి, పత్తి లేదా నీటి గురించి అడగండి..." />
+        <button class="btn-primary" onclick="sendAdvice()" id="btnAsk">పంపు</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    let lang = "te";
+    const i18n = {
+      te: {
+        title: "విహాన్ రైతుమిత్ర",
+        sub: "రైతుల డిజిటల్ సహాయకుడు • AP & Telangana",
+        toggle: "English",
+        tabMandi: "మండి ధరలు",
+        tabLedger: "ఖర్చు & ఆదాయం",
+        tabCalendar: "పంట క్యాలెండర్",
+        tabAdvisor: "కృషి మిత్ర",
+        mandiHeading: "ప్రధాన పంటల మండి ధరలు (క్వింటాల్‌కు)",
+        thCrop: "పంట",
+        thMarket: "మార్కెట్",
+        thRate: "ధర (₹)",
+        ledgerHeading: "ఖర్చు & ఆదాయం నమోదు",
+        lblIncome: "మొత్తం ఆదాయం",
+        lblExpense: "మొత్తం ఖర్చు",
+        lblBalance: "నికర నిల్వ",
+        optExp: "ఖర్చు",
+        optInc: "ఆదాయం",
+        notePh: "వివరం (ఉదా: ఎరువులు, వరి విక్రయం)",
+        amtPh: "మొత్తం (₹)",
+        btnAddTx: "జతచేయి",
+        thNote: "వివరం",
+        thType: "రకం",
+        thAmt: "మొత్తం",
+        calHeading: "పంట దశల క్యాలెండర్",
+        advHeading: "కృషి మిత్ర సలహా",
+        chatPh: "వరి, మిర్చి, పత్తి లేదా నీటి గురించి అడగండి...",
+        btnAsk: "పంపు",
+        welcome: "నమస్కారం! నేను విహాన్ రైతుమిత్ర. వరి, మిర్చి, పత్తి, మొక్కజొన్న పంటల సంరక్షణ గురించి అడగండి."
+      },
+      en: {
+        title: "Vihan Raitumitra",
+        sub: "Digital Farmer Companion • AP & Telangana",
+        toggle: "తెలుగు",
+        tabMandi: "Mandi Rates",
+        tabLedger: "Expense & Income",
+        tabCalendar: "Crop Calendar",
+        tabAdvisor: "Krishi Mitra",
+        mandiHeading: "Indicative Mandi Rates (Per Quintal)",
+        thCrop: "Crop",
+        thMarket: "Market",
+        thRate: "Rate (₹)",
+        ledgerHeading: "Farm Expense & Income Ledger",
+        lblIncome: "Total Income",
+        lblExpense: "Total Expense",
+        lblBalance: "Net Balance",
+        optExp: "Expense",
+        optInc: "Income",
+        notePh: "Details (e.g., Fertilizer, Paddy sale)",
+        amtPh: "Amount (₹)",
+        btnAddTx: "Add",
+        thNote: "Details",
+        thType: "Type",
+        thAmt: "Amount",
+        calHeading: "Crop Growth Stages",
+        advHeading: "Krishi Mitra Guidance",
+        chatPh: "Ask about paddy, chilli, cotton, or irrigation...",
+        btnAsk: "Send",
+        welcome: "Namaskaram! I am Vihan Raitumitra. Ask me about paddy, chilli, cotton, or maize care."
+      }
+    };
+
+    const mandiData = [
+      { cropTe: "వరి (ధాన్యం)", cropEn: "Paddy", mktTe: "కాకినాడ / విజయవాడ", mktEn: "Kakinada / Vijayawada", rate: "₹2,320" },
+      { cropTe: "మిర్చి", cropEn: "Red Chilli", mktTe: "గుంటూరు", mktEn: "Guntur", rate: "₹14,800" },
+      { cropTe: "పత్తి", cropEn: "Cotton", mktTe: "వరంగల్ / ఆదిలాబాద్", mktEn: "Warangal / Adilabad", rate: "₹7,150" },
+      { cropTe: "మొక్కజొన్న", cropEn: "Maize", mktTe: "నిజామాబాద్", mktEn: "Nizamabad", rate: "₹2,240" }
+    ];
+
+    const stages = [
+      { dTe: "1–15 రోజులు", dEn: "Days 1–15", tTe: "విత్తన ఎంపిక & నారుమడి", tEn: "Seed Selection & Nursery", descTe: "నాణ్యమైన విత్తనాలు వాడి, తేమ సరిపడేలా చూడండి.", descEn: "Use quality seeds and maintain optimal moisture." },
+      { dTe: "16–45 రోజులు", dEn: "Days 16–45", tTe: "నాట్లు & కలుపు నియంత్రణ", tEn: "Transplanting & Weeding", descTe: "సమయానికి కలుపు తీసి, మట్టి పరీక్ష ఆధారంగా పోషకాలు ఇవ్వండి.", descEn: "Control weeds early and apply nutrients based on soil needs." },
+      { dTe: "46–80 రోజులు", dEn: "Days 46–80", tTe: "పిలక దశ & పురుగు పర్యవేక్షణ", tEn: "Tillering & Pest Watch", descTe: "ఆకుల కింద పురుగులు/తెగుళ్లు ఉన్నాయేమో తరచూ తనిఖీ చేయండి.", descEn: "Inspect leaves regularly for pests or early disease signs." },
+      { dTe: "81+ రోజులు", dEn: "Day 81+", tTe: "గింజ గట్టిపడటం & కోత", tEn: "Grain Filling & Harvest", descTe: "కోతకు ముందు నీరు తగ్గించి, తేమ తగ్గిన తర్వాత నిల్వ చేయండి.", descEn: "Drain before harvest and dry properly before storage." }
+    ];
+
+    let transactions = JSON.parse(localStorage.getItem("vihan_tx") || "[]");
+    let messages = JSON.parse(localStorage.getItem("vihan_chat") || "null") || [{ from: "bot", text: i18n.te.welcome }];
+
+    function toggleLang() { lang = lang === "te" ? "en" : "te"; renderAll(); }
+    function switchTab(name) {
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b.dataset.tab === name));
+      ["mandi", "ledger", "calendar", "advisor"].forEach(s => {
+        document.getElementById("sec-" + s).classList.toggle("hidden", s !== name);
+      });
+    }
+
+    function addTx() {
+      const type = document.getElementById("txType").value;
+      const note = document.getElementById("txNote").value.trim();
+      const amount = Number(document.getElementById("txAmount").value);
+      if (!note || !amount || amount <= 0) return;
+      transactions.unshift({ id: Date.now(), type, note, amount });
+      localStorage.setItem("vihan_tx", JSON.stringify(transactions));
+      document.getElementById("txNote").value = "";
+      document.getElementById("txAmount").value = "";
+      renderLedger();
+    }
+
+    function delTx(id) {
+      transactions = transactions.filter(t => t.id !== id);
+      localStorage.setItem("vihan_tx", JSON.stringify(transactions));
+      renderLedger();
+    }
+
+    function sendAdvice() {
+      const input = document.getElementById("chatInput");
+      const q = input.value.trim();
+      if (!q) return;
+      messages.push({ from: "user", text: q });
+      const lower = q.toLowerCase();
+      let reply = lang === "te"
+        ? "మంచి ప్రశ్న. పంట దశ, నేల తేమ మరియు స్థానిక వ్యవసాయ అధికారి సలహా ఆధారంగా చర్య తీసుకోండి."
+        : "Good question. Act based on crop stage, soil moisture, and local agricultural guidance.";
+      if (lower.includes("వరి") || lower.includes("paddy")) {
+        reply = lang === "te"
+          ? "వరిలో పిలక దశలో 2–3 సెం.మీ నీటి మట్టం ఉంచడం మంచిది."
+          : "In paddy tillering stage, maintain 2–3 cm water depth.";
+      } else if (lower.includes("మిర్చి") || lower.includes("chilli")) {
+        reply = lang === "te"
+          ? "మిర్చిలో నీరు నిలబడకుండా డ్రైనేజీ సరిగా ఉండాలి."
+          : "Ensure proper drainage for chilli so water does not stagnate.";
+      }
+      messages.push({ from: "bot", text: reply });
+      localStorage.setItem("vihan_chat", JSON.stringify(messages));
+      input.value = "";
+      renderChat();
+    }
+
+    function renderMandi() {
+      document.getElementById("mandiBody").innerHTML = mandiData.map(row => `
+        <tr>
+          <td><strong>${lang === "te" ? row.cropTe : row.cropEn}</strong></td>
+          <td>${lang === "te" ? row.mktTe : row.mktEn}</td>
+          <td><span class="badge">${row.rate}</span></td>
+        </tr>
+      `).join("");
+    }
+
+    function renderLedger() {
+      const inc = transactions.filter(t => t.type === "income").reduce((s, t) => s + t.amount, 0);
+      const exp = transactions.filter(t => t.type === "expense").reduce((s, t) => s + t.amount, 0);
+      const bal = inc - exp;
+      document.getElementById("totalIncome").textContent = "₹" + inc.toLocaleString();
+      document.getElementById("totalExpense").textContent = "₹" + exp.toLocaleString();
+      document.getElementById("netBalance").textContent = (bal < 0 ? "-₹" : "₹") + Math.abs(bal).toLocaleString();
+      const t = i18n[lang];
+      document.getElementById("txBody").innerHTML = transactions.map(item => `
+        <tr>
+          <td>${item.note}</td>
+          <td>${item.type === "income" ? t.optInc : t.optExp}</td>
+          <td>₹${item.amount.toLocaleString()}</td>
+          <td><button class="btn-del" onclick="delTx(${item.id})">✕</button></td>
+        </tr>
+      `).join("");
+    }
+
+    function renderCalendar() {
+      document.getElementById("calList").innerHTML = stages.map(st => `
+        <div class="stat-box">
+          <span class="badge">${lang === "te" ? st.dTe : st.dEn}</span>
+          <h3 style="font-size:0.98rem; margin:8px 0 4px;">${lang === "te" ? st.tTe : st.tEn}</h3>
+          <p style="font-size:0.86rem; color:var(--muted);">${lang === "te" ? st.descTe : st.descEn}</p>
+        </div>
+      `).join("");
+    }
+
+    function renderChat() {
+      const box = document.getElementById("chatBox");
+      box.innerHTML = messages.map(m => `<div class="msg ${m.from}">${m.text}</div>`).join("");
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function renderAll() {
+      const t = i18n[lang];
+      document.documentElement.lang = lang;
+      document.getElementById("appTitle").textContent = t.title;
+      document.getElementById("appSub").textContent = t.sub;
+      document.getElementById("langToggle").textContent = t.toggle;
+      document.getElementById("tabMandi").textContent = t.tabMandi;
+      document.getElementById("tabLedger").textContent = t.tabLedger;
+      document.getElementById("tabCalendar").textContent = t.tabCalendar;
+      document.getElementById("tabAdvisor").textContent = t.tabAdvisor;
+      document.getElementById("mandiHeading").textContent = t.mandiHeading;
+      document.getElementById("thCrop").textContent = t.thCrop;
+      document.getElementById("thMarket").textContent = t.thMarket;
+      document.getElementById("thRate").textContent = t.thRate;
+      document.getElementById("ledgerHeading").textContent = t.ledgerHeading;
+      document.getElementById("lblIncome").textContent = t.lblIncome;
+      document.getElementById("lblExpense").textContent = t.lblExpense;
+      document.getElementById("lblBalance").textContent = t.lblBalance;
+      document.getElementById("optExp").textContent = t.optExp;
+      document.getElementById("optInc").textContent = t.optInc;
+      document.getElementById("txNote").placeholder = t.notePh;
+      document.getElementById("txAmount").placeholder = t.amtPh;
+      document.getElementById("btnAddTx").textContent = t.btnAddTx;
+      document.getElementById("thNote").textContent = t.thNote;
+      document.getElementById("thType").textContent = t.thType;
+      document.getElementById("thAmt").textContent = t.thAmt;
+      document.getElementById("calHeading").textContent = t.calHeading;
+      document.getElementById("advHeading").textContent = t.advHeading;
+      document.getElementById("chatInput").placeholder = t.chatPh;
+      document.getElementById("btnAsk").textContent = t.btnAsk;
+      renderMandi(); renderLedger(); renderCalendar(); renderChat();
+    }
+
+    renderAll();
+  </script>
+</body>
+</html>
